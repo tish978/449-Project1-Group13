@@ -1,0 +1,23 @@
+CREATE TABLE users (
+	user_id int NOT NULL PRIMARY KEY,
+	password varchar(255),
+	games_played int
+);
+
+CREATE TABLE games (
+	game_id int NOT NULL PRIMARY KEY,
+	game_secret_word varchar(255),
+	won BOOLEAN,
+	number_of_guesses_made int,
+	number_of_guesses_left int,
+	user_id int,
+	FOREIGN KEY (user_id) REFERENCES users(user_id)
+);
+
+
+CREATE TABLE wordGuess (
+	user_word_guess_id int NOT NULL PRIMARY KEY,
+	user_word_guess varchar(255),
+	game_id int,
+	FOREIGN KEY (game_id) REFERENCES games(game_id)
+);
