@@ -2,10 +2,10 @@ CPSC 449-project-1
 Wordle REST API
 
 Group members:
-Satish Bisa
-Ly Nguyen
-Michael Collins
-Marcos Sanchez-Cruz
+Satish Bisa,
+ Ly Nguyen,
+ Michael Collins,
+ Marcos Sanchez-Cruz
 
 
 In this project, our team was able to effectively build a back-end API for a game quite similar to the popular game "Wordle", with the exception of a few
