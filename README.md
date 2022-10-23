@@ -19,6 +19,8 @@ tables.
 
 NOTE 2: Prior to any testing, please be sure to update the "URL" value in wordle-api.toml to match the directory/file path of the rest of the project files.
 
+NOTE 3: On line 21 of wordle-api.py ("app.config.from_file("/home/student/Documents/449-wordle/wordle-api.toml", toml.load") ensure that the URL there correctly reflects the file path location of the wordle-api.toml file, which should just be the same location of where all the other project files are. 
+
 
 GETTING STARTED:
 From the command line of the project directory, run the following commands to init/populate the database:
