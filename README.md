@@ -24,9 +24,7 @@ NOTE 3: On line 21 of wordle-api.py ("app.config.from_file("/home/student/Docume
 
 GETTING STARTED:
 From the command line of the project directory, run the following commands to init/populate the database:
-- sqlite3 wordle-DB
-- .read wordle-DB_schema.sql
-- .exit
+./bin/init.sh
 
 
 TO LAUNCH THE SERVICE:
