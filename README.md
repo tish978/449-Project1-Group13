@@ -24,7 +24,7 @@ NOTE 3: On line 21 of wordle-api.py ("app.config.from_file("/home/student/Docume
 
 GETTING STARTED:
 
-1. TO LAUNCH THE SERVICE:
+1. TO LAUNCH THE SERVICE:  
 From the command line of the project directory, simply run   
 	`foreman start`  
 if error: Already running process, run below steps:  
