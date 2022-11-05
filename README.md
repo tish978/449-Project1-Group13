@@ -35,7 +35,7 @@ if error: Already running process, run below steps:
 2. From the command line of the project directory, run the following commands to init/populate the database:  
 	`./bin/init.sh`
 
-3. Once exit the foreman, follow the below steps:
+3. Once exit the foreman, follow the below steps:  
 	a. Run three times:   
 		`sudo umount litefs`  
 	Ignore the errors/warnings.  
