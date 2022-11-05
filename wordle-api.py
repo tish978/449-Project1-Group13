@@ -12,6 +12,7 @@ import validWords
 import random
 import toml
 import databases
+import textwrap
 
 
 app = Quart(__name__)
@@ -37,6 +38,16 @@ async def close_connection(exception):
     db = getattr(g, "_sqlite_db", None)
     if db is not None:
         await db.disconnect()
+        
+
+@app.route("/", methods=["GET"])
+def index():
+    return textwrap.dedent(
+        """
+        <h1>Welcome to Wordle Game</h1>
+        <p>A prototype API for Wordle Game.</p>\n
+        """
+    )
 
 
 @app.errorhandler(404)
