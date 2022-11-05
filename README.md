@@ -26,18 +26,19 @@ GETTING STARTED:
 
 1. TO LAUNCH THE SERVICE:
 From the command line of the project directory, simply run   
-	`foreman start`
+	`foreman start`  
 if error: Already running process, run below steps:  
 	a. `sudo lsof -n -i :5000 | grep LISTEN`  
-	b. Run below for every PID:
-	   `kill -9 <pid>`
+	b. Run below for every PID:  
+	   `kill -9 <pid>`  
 
 2. From the command line of the project directory, run the following commands to init/populate the database:  
 	`./bin/init.sh`
 
 3. Once exit the foreman, follow the below steps:
-	a. Run three times: `sudo umount litefs` 
-	   Ignore the errors/warnings.
+	a. Run three times:   
+		`sudo umount litefs`  
+	Ignore the errors/warnings.  
 	b. Remove all the contents of the following:  
 		var/primary/data  
 		var/primary/mount  
