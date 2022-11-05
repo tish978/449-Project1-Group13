@@ -25,60 +25,66 @@ NOTE 3: On line 21 of wordle-api.py ("app.config.from_file("/home/student/Docume
 GETTING STARTED:
 
 1. TO LAUNCH THE SERVICE:
-From the command line of the project directory, simply run 
+From the command line of the project directory, simply run   
 	`foreman start`
-if error: Already running process, run below steps:
-	a. `sudo lsof -n -i :5000 | grep LISTEN`
+if error: Already running process, run below steps:  
+	a. `sudo lsof -n -i :5000 | grep LISTEN`  
 	b. Run below for every PID:
 	   `kill -9 <pid>`
 
-2. From the command line of the project directory, run the following commands to init/populate the database:
+2. From the command line of the project directory, run the following commands to init/populate the database:  
 	`./bin/init.sh`
 
 3. Once exit the foreman, follow the below steps:
 	a. Run three times: `sudo umount litefs` 
 	   Ignore the errors/warnings.
-	b. Remove all the contents of the following:
-		var/primary/data
-		var/primary/mount
-		var/secondary1/data
-		var/secondary1/mount
-		var/secondary2/data
+	b. Remove all the contents of the following:  
+		var/primary/data  
+		var/primary/mount  
+		var/secondary1/data  
+		var/secondary1/mount  
+		var/secondary2/data  
 		var/secondary2/mount
 
 
 ENDPOINT 1: @app.route("/register/", methods=["POST"])
 - This endpoint is used for registering a user/creating an account for a user to authenticate themselves.
-- ex: `http POST http://127.0.0.1:5000/register/ user_id=15 password=bisa`
+- ex:   
+	`http POST http://127.0.0.1:5000/register/ user_id=15 password=bisa`  
 - After executing, the users table in the database will have a new account correlating to the user's user_id and password.
 
 ENDPOINT 2: @app.route("/login/", methods=["POST"])
 - This endpoint is used for logging in and authenticating a user, if their account already exists. 
-- ex: `http POST http://127.0.0.1:5000/login/ user_id=15 password=bisa`
+- ex:   
+	`http POST http://127.0.0.1:5000/login/ user_id=15 password=bisa`  
 - After executing, the users table is checked to see if the specified user's account exists and authenticates if the password is correct.
 
 ENDPOINT 3: @app.route("/create_new_game/", methods=["POST"])
 - This endpoint is used for creating a new game for a specified user via user_id.
-- ex: `http POST http://127.0.0.1:5000/create_new_game/ user_id=15`
+- ex:   
+	`http POST http://127.0.0.1:5000/create_new_game/ user_id=15`  
 - After executing, the games table is updated to have a new game started for the specified user. This also generates the secret word
 that the user must guess in order to win the game.
 
 ENDPOINT 4: @app.route('/answer/', methods=['POST'])
 - This endpoint is used for submitting an answer to what the secret word might be, by specifying the exact game_id of the game being
 played as well as the exact answer that is being used.
-- ex: `http POST http://127.0.0.1:5000/answer/ game_id=19 answer=daisy`
+- ex:   
+	`http POST http://127.0.0.1:5000/answer/ game_id=19 answer=daisy`  
 - After executing, if the answer is correct the game is over as a victory. If incorrect, the guess count of that game is incremented,
 And the user may use the same endpoint with a new answer value to answer again. Once the guess count reaches 6, the game ends as a 
 loss for the user. 
 
 ENDPOINT 5: @app.route("/get_games_in_progress/", methods=["POST"])
 - This endpoint is used for seeing all the games that are in progress for a user based on their user_id.
-- ex: `http POST http://127.0.0.1:5000/get_games_in_progress/ user_id=15`
+- ex:   
+	`http POST http://127.0.0.1:5000/get_games_in_progress/ user_id=15`  
 - After executing, the user can see a list of all their games in progress and continue them using "ENDPOINT 4" until completion.
 
 ENDPOINT 6: @app.route("/get_game_state/", methods=["POST"])
 - This endpoint is used to see the current state of a game.
-- ex: `http POST http://127.0.0.1:5000/get_game_state/ game_id=19`
+- ex:   
+	`http POST http://127.0.0.1:5000/get_game_state/ game_id=19`  
 - After executing, the user can see a list of the number of guesses they have left remaining in the game, as well as the number
 of guesses they have made as a whole up to that point.
 
