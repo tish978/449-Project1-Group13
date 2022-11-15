@@ -16,7 +16,8 @@ import databases
 app = Quart(__name__)
 QuartSchema(app)
 
-app.config.from_file("/home/student/Documents/449-wordle/games-api.toml", toml.load)
+#app.config.from_file("/home/student/Documents/449-wordle/games-api.toml", toml.load)
+app.config.from_file(f"./etc/{__name__}.toml", toml.load)
 
 secretWord: str = ""
 
