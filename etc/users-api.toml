@@ -1,2 +1,2 @@
 [DATABASES]
-URL = 'sqlite:////home/student/Documents/449-wordle/users-DB'
+URL = 'sqlite+aiosqlite:///var/users-DB'
