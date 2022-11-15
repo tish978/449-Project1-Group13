@@ -1,8 +1,8 @@
 # Required. Path used to access LiteFS from your application.
-mount-dir: "/home/student/Documents/Git/449-Project1-Group13/var/secondary1/mount"
+mount-dir: "/home/student/Project-2/449-Project1-Group13/var/secondary1/mount"
 
 # Optional. Path to store underlying data.
-data-dir: "/home/student/Documents/Git/449-Project1-Group13/var/secondary1/data"
+data-dir: "/home/student/Project-2/449-Project1-Group13/var/secondary1/data"
 
 
 http:

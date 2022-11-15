@@ -1,8 +1,7 @@
 # Required. Path used to access LiteFS from your application.
-mount-dir: "/home/student/Documents/Git/449-Project1-Group13/var/primary/mount"
-
+mount-dir: "/home/student/Project-2/449-Project1-Group13/var/primary/mount"
 # Optional. Path to store underlying data.
-data-dir: "/home/student/Documents/Git/449-Project1-Group13/var/primary/data"
+data-dir: "/home/student/Project-2/449-Project1-Group13/var/primary/data"
 
 
 exec: "hypercorn wordle-api --reload --debug --bind wordle-api.local.gd:$PORT --access-logfile - --error-logfile - --log-level DEBUG"
