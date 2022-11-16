@@ -12,6 +12,7 @@ import validWords
 import random
 import toml
 import databases
+import textwrap
 from quart import Quart, g, request, abort
 from sqlite3 import dbapi2 as sqlite3
 from quart_auth import UnauthorizedBasicAuth
@@ -52,8 +53,8 @@ async def check_auth():
     users = await db.fetch_all(query=query,)
     user_dict = {}
     for user in users:
-        user_dict[user["user_id"]] = user["password"]
-        print(user_dict)
+    	username = str(user["user_id"])
+    	user_dict[username] = user["password"]
     return user_dict
 
 def basic_auth_required(
@@ -67,13 +68,13 @@ def basic_auth_required(
                 auth = request.authorization
             else:
                 raise RuntimeError("Not used in a valid request/websocket context")
-
+            user = await check_auth()
             if (
                 auth is not None
                 and auth.type == "basic"
                 and auth.username in await check_auth()
                 ):
-                current_app.config[password_key] = await check_auth()[auth.username]
+                current_app.config[password_key] = user[auth.username]
                 if compare_digest(auth.password, current_app.config[password_key]):
                     return await current_app.ensure_async(func)(*args, **kwargs)
                 else:
@@ -83,16 +84,19 @@ def basic_auth_required(
         return wrapper
     return decorator
 
-@app.route("/", methods=["GET"])
+@app.route("/", methods=["GET", "POST"])
 @basic_auth_required()
-def index():
-    print("*******REQUEST: ", request.authorization)
-    return textwrap.dedent(
-        """
-        <h1>Welcome to Wordle Game</h1>
-        <p>A prototype API for Wordle Game.</p>\n
-        """
-    )
+async def index():
+    if request.method == "POST":
+        return abort(400)
+    else:
+    	print("*******REQUEST: ", request.authorization)
+    	return textwrap.dedent(
+		"""
+		<h1>Welcome to Wordle Game</h1>
+		<p>A prototype API for Wordle Game.</p>\n
+		"""
+	    )
     
 @app.route("/register/", methods=["POST"])
 async def create_user():
@@ -133,7 +137,8 @@ async def login():
         abort(404)
 
 
-@app.route("/auth/", methods=["POST"])
+@app.route("/auth/")
+@basic_auth_required()
 async def auth():
     db = await _get_db()
     data = await request.get_json()
