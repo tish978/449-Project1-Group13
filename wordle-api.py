@@ -49,16 +49,6 @@ async def close_connection(exception):
     if db is not None:
         await db.disconnect()
         
-
-@app.route("/", methods=["GET"])
-def index():
-    return textwrap.dedent(
-        """
-        <h1>Welcome to Wordle Game</h1>
-        <p>A prototype API for Wordle Game.</p>\n
-        """
-    )
-    
 async def check_auth():
     db = _get_db()
     cur = await db.execute(
@@ -70,6 +60,7 @@ async def check_auth():
     user_dict = {}
     for user in users:
         user_dict[user["user_id"]] = user["password"]
+        print(user_dict)
     return user_dict
 
 def basic_auth_required(
@@ -98,16 +89,22 @@ def basic_auth_required(
                 raise UnauthorizedBasicAuth()
         return wrapper
     return decorator
+        
 
-
-
-@app.errorhandler(404)
-def not_found(e):
-    return {"error": "The resource could not be found"}, 404
+@app.route("/", methods=["GET"])
+@basic_auth_required()
+def index():
+    return textwrap.dedent(
+        """
+        <h1>Welcome to Wordle Game</h1>
+        <p>A prototype API for Wordle Game.</p>\n
+        """
+    )
     
-@app.errorhandler(505)
-def not_found(e):
-    return {"Error": "Game is Over"}, 505
+
+
+
+
 
 
 @app.route("/register/", methods=["POST"])
@@ -132,9 +129,8 @@ async def create_user():
 
   
 @app.route("/auth/", methods=["GET","POST"])
-@basic_auth_required()
 async def login():
-	if request.method == "POST":
+	if request.method == "GET":	
 	    db = await _get_db()
 	    data = await request.get_json()
 	    user_data = f"{data['user_id']} {data['password']}"
@@ -151,15 +147,19 @@ async def login():
 	    	abort(404)
 	else:
 		url = "https://tuffix-vm/"
-
-
-
 		resp=requests.get(url, auth=('myusername', 'mybasicpass'))
 
 		return(resp.status_code)
 		#return await jsonify("{{ current_user.is_authenticated }}")
     
 
+@app.errorhandler(404)
+def not_found(e):
+    return {"error": "The resource could not be found"}, 404
+    
+@app.errorhandler(505)
+def not_found(e):
+    return {"Error": "Game is Over"}, 505
 
 @app.route("/create_new_game/", methods=["POST"])
 async def create_new_game():

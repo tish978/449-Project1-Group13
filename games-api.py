@@ -12,6 +12,7 @@ import validWords
 import random
 import toml
 import databases
+import textwrap
 
 app = Quart(__name__)
 QuartSchema(app)
@@ -29,6 +30,17 @@ async def _get_db():
         await db.connect()
     return db
 
+@app.route("/", methods=["GET", "POST"])
+async def index():
+    if request.method == "POST":
+        return abort(400)
+    else:
+    	return textwrap.dedent(
+		"""
+		<h1>Welcome to Wordle Game</h1>
+		<p>A prototype API for Wordle Game.</p>\n
+		"""
+	    )
 
 @app.teardown_appcontext
 async def close_connection(exception):
