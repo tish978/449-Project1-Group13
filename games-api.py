@@ -130,7 +130,7 @@ async def answer():
             await db.execute(query=count_update, values={"guess_count": guess_count, "game_id": game_id})
             guesses_left_update = "UPDATE games SET number_of_guesses_left=:guesses_left WHERE game_id=:game_id"
             await db.execute(query=guesses_left_update, values={"guesses_left": guesses_left, "game_id": game_id})
-            return jsonify({"Incorrect": "Number of guesses is increased", "Number of guesses made": guessCount,
+            return jsonify({"Incorrect": "Number of guesses is increased", "Number of guesses made": guess_count,
                             "Number of guesses left": guesses_left})
 
 
