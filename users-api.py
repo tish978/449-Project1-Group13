@@ -55,6 +55,7 @@ async def check_auth():
     for user in users:
     	username = str(user["user_id"])
     	user_dict[username] = user["password"]
+    print(user_dict)
     return user_dict
 
 def basic_auth_required(
@@ -84,19 +85,6 @@ def basic_auth_required(
         return wrapper
     return decorator
 
-@app.route("/", methods=["GET", "POST"])
-@basic_auth_required()
-async def index():
-    if request.method == "POST":
-        return abort(400)
-    else:
-    	print("*******REQUEST: ", request.authorization)
-    	return textwrap.dedent(
-		"""
-		<h1>Welcome to Wordle Game</h1>
-		<p>A prototype API for Wordle Game.</p>\n
-		"""
-	    )
     
 @app.route("/register/", methods=["POST"])
 async def create_user():
@@ -118,7 +106,7 @@ async def create_user():
     return jsonify({"authenticated": "true"})
 
 
-@app.route("/login/", methods=["POST"])
+'''@app.route("/login/", methods=["POST"])
 async def login():
     db = await _get_db()
     data = await request.get_json()
@@ -134,27 +122,15 @@ async def login():
     if row:
         return jsonify({"authenticated": "true"})
     else:
-        abort(404)
+        abort(404)'''
 
 
-@app.route("/auth/")
+@app.route("/auth/", methods=["GET"])
 @basic_auth_required()
 async def auth():
-    db = await _get_db()
-    data = await request.get_json()
-    user_data = f"{data['user_id']} {data['password']}"
-
-    app.logger.debug(user_data)
-    entered_id = data['user_id']
-    entered_pass = data['password']
-
-    query = "SELECT * FROM users WHERE user_id = :id and password = :password"
-    app.logger.info(query)
-    row = await db.fetch_one(query=query, values={"id": entered_id, "password": entered_pass})
-    if row:
-        return jsonify({"authenticated": "true"})
-    else:
-        abort(404)
+    auth = request.authorization
+    print("REQUEST HEADERS:\n", request.headers)
+    return jsonify({"authenticated": "true"})
         
 @app.errorhandler(404)
 def not_found(e):
