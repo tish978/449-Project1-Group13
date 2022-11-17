@@ -1,2 +1,2 @@
 [DATABASES]
-URL = 'sqlite:////home/student/Documents/449-Project-2/449-Project1-Group13/var/games-DB'
+URL = 'sqlite:///var/games-DB'
