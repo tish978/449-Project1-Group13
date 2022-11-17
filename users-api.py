@@ -53,8 +53,8 @@ async def check_auth():
     users = await db.fetch_all(query=query,)
     user_dict = {}
     for user in users:
-    	username = str(user["user_id"])
-    	user_dict[username] = user["password"]
+        username = str(user["user_id"])
+        user_dict[username] = user["password"]
     print(user_dict)
     return user_dict
 
@@ -125,12 +125,13 @@ async def login():
         abort(404)'''
 
 
-@app.route("/auth/", methods=["GET"])
+@app.route("/login/", methods=["GET"])
 @basic_auth_required()
 async def auth():
     auth = request.authorization
     print("REQUEST HEADERS:\n", request.headers)
-    return jsonify({"authenticated": "true"})
+    Headers = str(request.headers)
+    return jsonify({"authenticated": "true" ,"Auth_Headers": Headers})
         
 @app.errorhandler(404)
 def not_found(e):
