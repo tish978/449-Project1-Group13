@@ -1,2 +1,3 @@
 [DATABASES]
-URL = 'sqlite+aiosqlite:///var/users-DB'
+URL = 'sqlite:////home/student/Documents/449-Project-2/449-Project1-Group13/var/users-DB'
+

@@ -2,29 +2,25 @@ PRAGMA foreign_keys=OFF;
 BEGIN TRANSACTION;
 
 CREATE TABLE wordGuess (
-user_word_guess_id int NOT NULL PRIMARY KEY,
+user_word_guess_id int,
 user_word_guess varchar(255),
-game_id int,
-FOREIGN KEY (game_id) REFERENCES games(game_id)
+game_id varchar(255)
 );
 
 CREATE TABLE IF NOT EXISTS "games" (
-	"game_id"	INTEGER,
+	"game_id"	varchar(255),
 	"user_id"	int,
 	"game_secret_word"	varchar(255),
 	"won"	BOOLEAN,
 	"number_of_guesses_made"	int,
-	"number_of_guesses_left"	int,
-	PRIMARY KEY("game_id")
+	"number_of_guesses_left"	int
 );
 
 
 CREATE TABLE IF NOT EXISTS "correctWords" (
 	"correct_word_id"	INTEGER,
 	"correct_word"	VARCHAR(255),
-	"game_id"	INTEGER,
-	FOREIGN KEY("game_id") REFERENCES "games"("games_id"),
-	PRIMARY KEY("correct_word_id" AUTOINCREMENT)
+	"game_id"	varchar(255)
 );
 INSERT INTO correctWords VALUES(1,'cigar',NULL);
 INSERT INTO correctWords VALUES(2,'rebut',NULL);
@@ -2338,9 +2334,7 @@ INSERT INTO correctWords VALUES(2309,'augur',NULL);
 CREATE TABLE IF NOT EXISTS "validWords" (
 	"valid_word_id"	INTEGER,
 	"valid_word"	VARCHAR(255),
-	"game_id"	INTEGER,
-	FOREIGN KEY("game_id") REFERENCES "games"("games_id"),
-	PRIMARY KEY("valid_word_id" AUTOINCREMENT)
+	"game_id"	varchar(255)
 );
 INSERT INTO validWords VALUES(1,'aahed',NULL);
 INSERT INTO validWords VALUES(2,'aalii',NULL);

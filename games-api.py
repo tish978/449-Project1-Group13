@@ -17,11 +17,12 @@ import textwrap
 app = Quart(__name__)
 QuartSchema(app)
 
-#app.config.from_file("/home/student/Documents/449-wordle/games-api.toml", toml.load)
+
 app.config.from_file(f"./etc/{__name__}.toml", toml.load)
 
-secretWord: str = ""
 
+secretWord: str = ""
+game_uuid: str = ""
 
 async def _get_db():
     db = getattr(g, "_sqlite_db", None)
@@ -41,6 +42,19 @@ async def index():
 		<p>A prototype API for Wordle Game.</p>\n
 		"""
 	    )
+
+@app.route("/", methods=["GET", "POST"])
+async def index():
+    if request.method == "POST":
+        return abort(400)
+    else:
+    	return textwrap.dedent(
+		"""
+		<h1>Welcome to Wordle Game</h1>
+		<p>A prototype API for Wordle Game.</p>\n
+		"""
+	    )
+
 
 @app.teardown_appcontext
 async def close_connection(exception):
@@ -62,6 +76,7 @@ def not_found(e):
 
 @app.route("/create_new_game/", methods=["POST"])
 async def create_new_game():
+
     db = await _get_db()
 
     data = await request.get_json()
@@ -70,24 +85,28 @@ async def create_new_game():
     entered_id = data['user_id']
 
     secretWord = str(random.choice(correctWords.correctWord))
-    print("SECRET WORD: " + secretWord)
 
-    query = "INSERT INTO games (game_id, game_secret_word, won, number_of_guesses_made, number_of_guesses_left, user_id) VALUES (NULL, :word, :won, :made, :left, :user_id)"
-    await db.execute(query=query,
-                     values={"word": secretWord, "won": False, "made": 0, "left": 6, "user_id": entered_id})
-    return jsonify({"Success": "New Game Entered"})
+    print("SECRET WORD: " + secretWord)
+    game_uuid = str(uuid.uuid4())
+    print("UUID GAME_ID: " + game_uuid)
+
+
+
+    query = "INSERT INTO games (game_id, game_secret_word, won, number_of_guesses_made, number_of_guesses_left, user_id) VALUES (:game_id, :word, :won, :made, :left, :user_id)"
+    await db.execute(query=query, values={"game_id": game_uuid, "word": secretWord, "won": False, "made": 0, "left": 6, "user_id": entered_id})
+    return jsonify({"Success": "New Game Entered", "Game ID": game_uuid})
 
 
 
 @app.route('/answer/', methods=['POST'])
 async def answer():
+
     db = await _get_db()
     guess_count: int = 0
     guesses_left: int = 0
 
     data = await request.get_json()
     user_data = f"{data['game_id']} {data['answer']}"
-
     app.logger.debug(user_data)
     game_id = data['game_id']
     answer = data['answer']
@@ -97,10 +116,8 @@ async def answer():
     query = "SELECT number_of_guesses_made FROM games WHERE game_id = :game_id"
     app.logger.info(query)
     initCursor = await db.fetch_one(query=query, values={"game_id": game_id})
-    # for guessMade in initCursor:
+
     if initCursor:
-        print("guess_count: " + str(guess_count))
-        print("initCursor " + str(initCursor))
         guess_count = initCursor[0]
         if guess_count == 6:
             abort(505)
@@ -108,12 +125,9 @@ async def answer():
     sql = "SELECT game_secret_word FROM games WHERE game_id = :game_id"
     app.logger.info(query)
     cursor = await db.fetch_val(query=sql, values={"game_id": game_id})
-    # for row in cursor:
-    # if answer == row[0]:
+
     if cursor:
-        print("cursor: " + str(cursor))
         if answer == cursor:
-            print("yes")
             guess_count = guess_count + 1
             guesses_left = 6 - guess_count
             count_update = "UPDATE games SET number_of_guesses_made=:guess_count WHERE game_id=:game_id"
@@ -136,18 +150,18 @@ async def answer():
 
 @app.route("/get_games_in_progress/", methods=["POST"])
 async def get_games_in_progress():
-    gamesList = []
 
+    gamesList = []
     db = await _get_db()
     data = await request.get_json()
     user_data = f"{data['user_id']}"
 
     app.logger.debug(user_data)
     entered_id = data['user_id']
-
     query = "SELECT * FROM games WHERE user_id = :user_id AND won = :won"
     app.logger.info(query)
     initCursor = await db.fetch_all(query=query, values={"user_id": entered_id, "won": 0})
+
     for game in initCursor:
         id_of_game = game[0]
         gamesList.append(id_of_game)
@@ -160,27 +174,27 @@ async def get_games_in_progress():
 
 @app.route("/get_game_state/", methods=["POST"])
 async def get_game_state():
+
     guessesLeft: int = 0
     guessesMade: int = 0
-
+	
     db = await _get_db()
     data = await request.get_json()
     user_data = f"{data['game_id']}"
-
     app.logger.debug(user_data)
     entered_id = data['game_id']
 
     query = "SELECT * FROM games WHERE game_id = :game_id"
     app.logger.info(query)
     initCursor = await db.fetch_one(query=query, values={"game_id": entered_id})
+    print("initCursor: " + str(initCursor))
+
     if initCursor:
-        guessesMade = initCursor[3]
+        guessesMade = initCursor[4]
         won = initCursor[2]
         if won == 1:
             guessesLeft = 6 - guessesMade
             return jsonify({"Game State": "GAME OVER", "Guesses Made": guessesMade, "Guesses Left": guessesLeft})
         else:
             guessesLeft = 6 - guessesMade
-            return jsonify({"Guesses Made": guessesMade, "Guesses Left": guessesLeft})
-
-
+            return jsonify({"Game State": "VICTORY", "Guesses Made": guessesMade, "Guesses Left": guessesLeft})
