@@ -31,6 +31,7 @@ if error: Already running process, run below steps:
 	a. `sudo lsof -n -i :5000 | grep LISTEN`  
 	b. Run below for every PID:  
 	   `kill -9 <pid>`  
+	   Or run `lsof -ti tcp:5000 | xargs kill`
 
 2. From the command line of the project directory, run the following commands to init/populate the database:  
 	`./bin/init.sh`

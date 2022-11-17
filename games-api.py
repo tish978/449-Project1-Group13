@@ -12,12 +12,14 @@ import validWords
 import random
 import toml
 import databases
+import textwrap
 
 app = Quart(__name__)
 QuartSchema(app)
 
-app.config.from_file("/home/student/Documents/449-Project-2/449-Project1-Group13/etc/games-api.toml", toml.load)
-#app.config.from_file("/home/student/Documents/449-Project-2/449-Project1-Group13/etc/test-games-DB.toml", toml.load)
+
+app.config.from_file(f"./etc/{__name__}.toml", toml.load)
+
 
 secretWord: str = ""
 game_uuid: str = ""
@@ -29,6 +31,17 @@ async def _get_db():
         await db.connect()
     return db
 
+@app.route("/", methods=["GET", "POST"])
+async def index():
+    if request.method == "POST":
+        return abort(400)
+    else:
+    	return textwrap.dedent(
+		"""
+		<h1>Welcome to Wordle Game</h1>
+		<p>A prototype API for Wordle Game.</p>\n
+		"""
+	    )
 
 @app.route("/", methods=["GET", "POST"])
 async def index():
@@ -131,8 +144,8 @@ async def answer():
             await db.execute(query=count_update, values={"guess_count": guess_count, "game_id": game_id})
             guesses_left_update = "UPDATE games SET number_of_guesses_left=:guesses_left WHERE game_id=:game_id"
             await db.execute(query=guesses_left_update, values={"guesses_left": guesses_left, "game_id": game_id})
-            return jsonify({"Incorrect": "Number of guesses is increased", "Number of guesses made": guess_count, "Number of guesses left": guesses_left})
-
+            return jsonify({"Incorrect": "Number of guesses is increased", "Number of guesses made": guess_count,
+                            "Number of guesses left": guesses_left})
 
 
 @app.route("/get_games_in_progress/", methods=["POST"])

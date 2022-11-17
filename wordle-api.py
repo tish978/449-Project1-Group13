@@ -13,6 +13,16 @@ import random
 import toml
 import databases
 import textwrap
+import requests
+from quart_auth import UnauthorizedBasicAuth
+from functools import wraps
+from secrets import compare_digest
+from typing import Any, Callable
+from quart import (
+    current_app,
+    has_request_context,
+    request,
+)
 
 
 app = Quart(__name__)
@@ -39,8 +49,50 @@ async def close_connection(exception):
     if db is not None:
         await db.disconnect()
         
+async def check_auth():
+    db = _get_db()
+    cur = await db.execute(
+        """
+        SELECT * FROM users
+        """,
+    )
+    users = cur.fetchall()
+    user_dict = {}
+    for user in users:
+        user_dict[user["user_id"]] = user["password"]
+        print(user_dict)
+    return user_dict
+
+def basic_auth_required(
+    username_key: str = "QUART_AUTH_BASIC_USERNAME",
+    password_key: str = "QUART_AUTH_BASIC_PASSWORD",
+) -> Callable:
+    def decorator(func: Callable) -> Callable:
+        @wraps(func)
+        async def wrapper(*args: Any, **kwargs: Any) -> Any:
+            if has_request_context():
+                auth = request.authorization
+            else:
+                raise RuntimeError("Not used in a valid request/websocket context")
+
+            if (
+                auth is not None
+                and auth.type == "basic"
+                and auth.username in check_auth()
+                ):
+                current_app.config[password_key] = check_auth()[auth.username]
+                if compare_digest(auth.password, current_app.config[password_key]):
+                    return await current_app.ensure_async(func)(*args, **kwargs)
+                else:
+                    raise UnauthorizedBasicAuth()
+            else:
+                raise UnauthorizedBasicAuth()
+        return wrapper
+    return decorator
+        
 
 @app.route("/", methods=["GET"])
+@basic_auth_required()
 def index():
     return textwrap.dedent(
         """
@@ -48,15 +100,11 @@ def index():
         <p>A prototype API for Wordle Game.</p>\n
         """
     )
-
-
-@app.errorhandler(404)
-def not_found(e):
-    return {"error": "The resource could not be found"}, 404
     
-@app.errorhandler(505)
-def not_found(e):
-    return {"Error": "Game is Over"}, 505
+
+
+
+
 
 
 @app.route("/register/", methods=["POST"])
@@ -80,25 +128,38 @@ async def create_user():
 
 
   
-@app.route("/login/", methods=["POST"])
+@app.route("/auth/", methods=["GET","POST"])
 async def login():
+	if request.method == "GET":	
+	    db = await _get_db()
+	    data = await request.get_json()
+	    user_data = f"{data['user_id']} {data['password']}"
 
-    db = await _get_db()
-    data = await request.get_json()
-    user_data = f"{data['user_id']} {data['password']}"
+	    app.logger.debug(user_data)
+	    entered_id = data['user_id']
+	    entered_pass = data['password']
+	    
+	    query = "SELECT * FROM users WHERE user_id = :id and password = :password"
+	    row = await db.fetch_one(query=query, values={"id": entered_id, "password": entered_pass})
+	    if row:
+	    	return jsonify({"authenticated": "true"})  
+	    else:
+	    	abort(404)
+	else:
+		url = "https://tuffix-vm/"
+		resp=requests.get(url, auth=('myusername', 'mybasicpass'))
 
-    app.logger.debug(user_data)
-    entered_id = data['user_id']
-    entered_pass = data['password']
+		return(resp.status_code)
+		#return await jsonify("{{ current_user.is_authenticated }}")
     
-    query = "SELECT * FROM users WHERE user_id = :id and password = :password"
-    row = await db.fetch_one(query=query, values={"id": entered_id, "password": entered_pass})
-    if row:
-    	return jsonify({"authenticated": "true"})  
-    else:
-    	abort(404)
-    
 
+@app.errorhandler(404)
+def not_found(e):
+    return {"error": "The resource could not be found"}, 404
+    
+@app.errorhandler(505)
+def not_found(e):
+    return {"Error": "Game is Over"}, 505
 
 @app.route("/create_new_game/", methods=["POST"])
 async def create_new_game():
