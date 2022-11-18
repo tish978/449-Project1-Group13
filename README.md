@@ -65,7 +65,7 @@ ENDPOINT 3: @app.route("/create_new_game/", methods=["POST"])
 - This endpoint is used for creating a new game for a specified user via user_id.
 - ex:   
 	```bash
-	http --auth 310:absd --auth-type basic POST http://tuffix-vm/create_new_game/ user_id=15
+	http --auth 310:absd --auth-type basic POST http://tuffix-vm/create_new_game/ user_id=310
 	```  
 - After executing, the games table is updated to have a new game started for the specified user. This also generates the secret word
 that the user must guess in order to win the game.
@@ -85,7 +85,7 @@ ENDPOINT 5: @app.route("/get_games_in_progress/", methods=["POST"])
 - This endpoint is used for seeing all the games that are in progress for a user based on their user_id.
 - ex:   
 	```bash
-	http --auth 310:absd --auth-type basic POST http://tuffix-vm/get_games_in_progress/ user_id=15
+	http --auth 310:absd --auth-type basic POST http://tuffix-vm/get_games_in_progress/ user_id=310
 	```  
 - After executing, the user can see a list of all their games in progress and continue them using "ENDPOINT 4" until completion.
 
