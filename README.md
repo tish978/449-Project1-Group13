@@ -18,9 +18,10 @@ GETTING STARTED:
 
 1. TO LAUNCH THE SERVICE:  
 From the command line of the project directory, simply run   
-	```bash
-	foreman start --formation users-api=1,games-api=3
-	```  
+```bash
+foreman start --formation users-api=1,games-api=3
+```
+  
 if error: Already running process, run below steps:  
 ```bash
 lsof -ti tcp:5000 | xargs kill
