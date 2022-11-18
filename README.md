@@ -22,32 +22,14 @@ From the command line of the project directory, simply run
 	foreman start --formation users-api=1,games-api=3
 	```  
 if error: Already running process, run below steps:  
-	a.```bash
-	sudo lsof -n -i :5000 | grep LISTEN
-	```  
-	b. Run below for every PID:  
-	```bash
-	lsof -ti tcp:5000 | xargs kill
-	```
+```bash
+lsof -ti tcp:5000 | xargs kill
+```
 
 2. From the command line of the project directory, run the following commands to init/populate the database:  
 ```bash
 ./bin/init.sh
 ```
-
-3. Once exit the foreman, follow the below steps:  
-	a. Run three times:   
-	```bash
-	sudo umount litefs
-	```  
-	Ignore the errors/warnings.  
-	b. Remove all the contents of the following:  
-		var/primary/data  
-		var/primary/mount  
-		var/secondary1/data  
-		var/secondary1/mount  
-		var/secondary2/data  
-		var/secondary2/mount
 
 
 ENDPOINT 1: @app.route("/register/", methods=["POST"])
