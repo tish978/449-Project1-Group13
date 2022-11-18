@@ -1,12 +1,12 @@
-###CPSC 449-Project2-Group2
-##Wordle REST API
+###CPSC 449-Project2-Group2. 
+##Wordle REST API. 
 
 Group members:  
 1. Satish Bisa  
 2. Shivangi Shakya  
 3. Mayur Kolhe  
  
-#DESCRIPTION
+#DESCRIPTION. 
 In this project, our team was able to effectively build a back-end API for a game quite similar to the popular game "Wordle", with the exception of a few
 conditions that the original game is known for. Some of these features include allowing more than one game to be played per day per player, as well offering
 different games to different players. 
