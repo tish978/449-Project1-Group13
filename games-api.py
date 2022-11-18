@@ -166,7 +166,7 @@ async def get_game_state():
 
     guessesLeft: int = 0
     guessesMade: int = 0
-	
+
     db = await _get_db()
     data = await request.get_json()
     user_data = f"{data['game_id']}"
@@ -176,14 +176,13 @@ async def get_game_state():
     query = "SELECT * FROM games WHERE game_id = :game_id"
     app.logger.info(query)
     initCursor = await db.fetch_one(query=query, values={"game_id": entered_id})
-    print("initCursor: " + str(initCursor))
 
     if initCursor:
         guessesMade = initCursor[4]
-        won = initCursor[2]
+        won = initCursor[3]
         if won == 1:
             guessesLeft = 6 - guessesMade
             return jsonify({"Game State": "GAME OVER", "Guesses Made": guessesMade, "Guesses Left": guessesLeft})
         else:
             guessesLeft = 6 - guessesMade
-            return jsonify({"Game State": "VICTORY", "Guesses Made": guessesMade, "Guesses Left": guessesLeft})
+            return jsonify({"Guesses Made": guessesMade, "Guesses Left": guessesLeft})
