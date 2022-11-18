@@ -4,22 +4,14 @@ Wordle REST API
 Group members:  
 1. Satish Bisa  
 2. Shivangi Shakya  
-3. Mayur  
+3. Mayur Kolhe
  
-
 
 In this project, our team was able to effectively build a back-end API for a game quite similar to the popular game "Wordle", with the exception of a few
 conditions that the original game is known for. Some of these features include allowing more than one game to be played per day per player, as well offering
 different games to different players. 
 
-The web service leverages Python's Quart web framework, and utilizes 6 main endpoints (described below) to simulate a user interacting with the game. 
-
-NOTE 1: There are 2 "bonus" endpoints noted below that were used for the loading of "correct words" and "valid words" into the database at their respective 
-tables.
-
-NOTE 2: Prior to any testing, please be sure to update the "URL" value in wordle-api.toml to match the directory/file path of the rest of the project files.
-
-NOTE 3: On line 21 of wordle-api.py ("app.config.from_file("/home/student/Documents/449-wordle/wordle-api.toml", toml.load") ensure that the URL there correctly reflects the file path location of the wordle-api.toml file, which should just be the same location of where all the other project files are. 
+This web service is actually split into 2 microservices called users-api and games-api, which both leverage Python's Quart web framework, and utilize 6 main endpoints (described below) to simulate a user interacting with the game. 
 
 
 GETTING STARTED:  
@@ -110,9 +102,3 @@ ENDPOINT 6: @app.route("/get_game_state/", methods=["POST"])
 	```  
 - After executing, the user can see a list of the number of guesses they have left remaining in the game, as well as the number
 of guesses they have made as a whole up to that point.
-
-**BONUS ENDPOINT: @app.route("/word_load/", methods=["POST"])
-- was used to load DB with all correct words that can be used as a secret word. Do not need to use again.
-
-**BONUS ENDPOINT: @app.route("/valid_word_load/", methods=["POST"])
-- was used to load DB with all valid words. Do not need to use again.
