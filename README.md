@@ -11,7 +11,7 @@ In this project, our team was able to effectively build a back-end API for a gam
 conditions that the original game is known for. Some of these features include allowing more than one game to be played per day per player, as well offering
 different games to different players. 
 
-This web service is actually split into 2 microservices called users-api and games-api, which both leverage Python's Quart web framework, and utilize 6 main endpoints (described below) to simulate a user interacting with the game. 
+This web service is actually split into 2 microservices called users-api and games-api, which both leverage Python's Quart web framework, and utilize 6 main endpoints (described below) to simulate a user interacting with the game. Also, our web services makes use of NginX for effective HTTP Authentication, as well as load balancing (which all gets shown in the command line throughout execution).
 
 
 GETTING STARTED:  
