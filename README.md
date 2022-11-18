@@ -1,4 +1,4 @@
-CPSC 449-project-2
+CPSC 449-Project2-Group2
 Wordle REST API
 
 Group members:  
