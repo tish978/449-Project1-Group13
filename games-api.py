@@ -13,6 +13,7 @@ import random
 import toml
 import databases
 import textwrap
+import uuid
 
 app = Quart(__name__)
 QuartSchema(app)
