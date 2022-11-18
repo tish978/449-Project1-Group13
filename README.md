@@ -26,6 +26,18 @@ if error: Already running process, run below steps:
 ```bash
 lsof -ti tcp:5000 | xargs kill
 ```
+and
+```bash
+lsof -ti tcp:5100 | xargs kill
+```
+and
+```bash
+lsof -ti tcp:5101 | xargs kill
+```
+and
+```bash
+lsof -ti tcp:5102 | xargs kill
+```
 
 2. From the command line of the project directory, run the following commands to init/populate the database:  
 ```bash
